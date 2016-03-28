@@ -4,7 +4,7 @@ Various example programs developed using Python
 * [RSSReader](https://github.com/tekrei/PythonExamples/tree/master/RSSReader): An experimental RSS reader using feedparser library
 * [XOXGame](https://github.com/tekrei/PythonExamples/tree/master/XOXGame): Various Tic Tac Toe game implementations with tkinter and (unfinished) GTK3
 
-All these programs are a free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+All these programs are a free software: you can redistribute them and/or modify them under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
 This programs are distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the [GNU General Public License](https://github.com/tekrei/PythonExamples/raw/master/LICENSE) for more details.
 
