@@ -2,7 +2,7 @@
 Various example programs developed using Python
 * [Browser](https://github.com/tekrei/PythonExamples/tree/master/Browser): A simple experimental browser with sqlite3 DB to store sites
 * [RSSReader](https://github.com/tekrei/PythonExamples/tree/master/RSSReader): An experimental RSS reader using [feedparser](https://pypi.python.org/pypi/feedparser) library
-* [XOXGame](https://github.com/tekrei/PythonExamples/tree/master/XOXGame): Various Tic Tac Toe game implementations with [tkinter](ahttps://wiki.python.org/moin/TkInter) and (unfinished) [GTK+ 3](https://python-gtk-3-tutorial.readthedocs.org/en/latest/index.html)
+* [XOXGame](https://github.com/tekrei/PythonExamples/tree/master/XOXGame): Various Tic Tac Toe game implementations with [tkinter](https://wiki.python.org/moin/TkInter) and (unfinished) [GTK+ 3](https://python-gtk-3-tutorial.readthedocs.org/en/latest/index.html)
 
 All these programs are a free software: you can redistribute them and/or modify them under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
