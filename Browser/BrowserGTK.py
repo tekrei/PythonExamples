@@ -5,21 +5,25 @@ A simple experimental browser which also stores sites and categories in the DB
 
 First version: 12 Aug 2009
 Upgrade to GTK3: 27 Mar 2016
+Fixes for Python v3: 27 Oct 2019
 '''
+import os
 import sys
-from BrowserUtility import *
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk
-gi.require_version('WebKit', '3.0')
-from gi.repository import WebKit
+gi.require_version('WebKit2', '4.0')
+from BrowserUtility import *
+from gi.repository import Gtk, WebKit2
+
+running_path = os.path.dirname(os.path.realpath(__file__))
+
 
 class BrowserGTK:
     def __init__(self):
-        self.webkit = WebKit.WebView()
-        self.utility = Utility()
+        self.webkit = WebKit2.WebView()
+        self.utility = Utility(running_path)
         self.builder = Gtk.Builder()
-        self.builder.add_from_file("browser.glade")
+        self.builder.add_from_file(running_path+"/browser.glade")
         handlers = {
             "destroyWindow": self.destroy,
             "onBtnRemoveSiteClicked": self.onBtnRemoveSiteClicked,
@@ -36,11 +40,11 @@ class BrowserGTK:
         self.window = self.builder.get_object("mainWindow")
         self.window.show_all()
         Gtk.main()
-        
+
     def destroy(self, widget):
         Gtk.main_quit()
-        
-    def onBtnRemoveSiteClicked(self,widget):
+
+    def onBtnRemoveSiteClicked(self, widget):
         model, rows = self.lstSites.get_selection().get_selected_rows()
         if len(rows) < 1:
             return None
@@ -48,30 +52,31 @@ class BrowserGTK:
         if selectedSite:
             selected = self.sites[selectedSite]
             self.utility.removeSite(selected.url)
-        self.populateSites(self.cmbCategories.get_active()+1)    
+        self.populateSites(self.cmbCategories.get_active()+1)
 
-    def onBtnAddSiteClicked(self,widget):
+    def onBtnAddSiteClicked(self, widget):
         name = self.askInfo("Please enter site name", "Site name")
         url = self.askInfo("Please enter site URL", "Site URL")
         category = self.cmbCategories.get_active()+1
-        if name and url and category>0:
+        if name and url and category > 0:
             self.utility.addSite(name, url, category)
         self.populateSites(category)
-    
-    def onCmbCategoriesChanged(self,widget):
+
+    def onCmbCategoriesChanged(self, widget):
         self.populateSites(self.cmbCategories.get_active()+1)
 
-    def responseToDialog(self, entry, dialog, response):  
+    def responseToDialog(self, entry, dialog, response):
         dialog.response(response)
 
     def askInfo(self, message, what):
         dialog = Gtk.MessageDialog(self.window,
-            Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT ,
-            Gtk.MessageType.QUESTION,
-            Gtk.ButtonsType.OK,None)
-        dialog.set_property("text",message)
+                                   Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                                   Gtk.MessageType.QUESTION,
+                                   Gtk.ButtonsType.OK, None)
+        dialog.set_property("text", message)
         entry = Gtk.Entry()
-        entry.connect("activate", self.responseToDialog, dialog, Gtk.ResponseType.OK)
+        entry.connect("activate", self.responseToDialog,
+                      dialog, Gtk.ResponseType.OK)
         hbox = Gtk.HBox()
         hbox.pack_start(Gtk.Label(what), False, 5, 5)
         hbox.pack_start(entry, False, 5, 5)
@@ -85,11 +90,11 @@ class BrowserGTK:
     def onLstSitesRowActivated(self, widget, row, column):
         self.selectedSite = row
         self.showSite(row)
-    
-    def showSite(self,row):
-        self.webkit.open(self.sites[row[0]].url)
-    
-    def populateSites(self,secili):
+
+    def showSite(self, row):
+        self.webkit.load_uri(self.sites[row[0]].url)
+
+    def populateSites(self, secili):
         self.sites = self.utility.getSites(secili)
         self.liststore.clear()
         for site in self.sites:
@@ -99,7 +104,7 @@ class BrowserGTK:
         liststore = Gtk.ListStore(str)
         cell = Gtk.CellRendererText()
         self.cmbCategories.pack_start(cell, True)
-        self.cmbCategories.add_attribute(cell, 'text', 0)  
+        self.cmbCategories.add_attribute(cell, 'text', 0)
         for liste in self.utility.getCategory():
             liststore.append(liste)
         self.cmbCategories.set_model(liststore)
@@ -113,6 +118,7 @@ class BrowserGTK:
         self.populateLists()
         self.scrBrowser.add(self.webkit)
         self.webkit.show()
+
 
 if __name__ == "__main__":
     hwg = BrowserGTK()

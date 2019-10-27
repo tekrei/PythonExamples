@@ -1,36 +1,44 @@
 # coding=UTF-8
 
-from Tkinter import Tk, StringVar, Button, mainloop, Menu
-import tkMessageBox
+import os
+from tkinter import Tk, StringVar, Button, mainloop, Menu, messagebox
 from PIL import ImageTk
+
+running_path = os.path.dirname(os.path.realpath(__file__))
+
 
 class BoardButton():
     def __init__(self, i, master=None):
-        self.numara = i
-        self.satir = i / 3
-        self.sutun = i % 3
-        self.metin = StringVar()
-        self.metin.set("")
+        self.number = i
+        self.row = int(i / 3)
+        self.column = int(i % 3)
+        self.text = StringVar()
+        self.text.set("")
+
         def clicked():
-            player(self.numara)
-        self.view = Button(master, textvariable=self.metin , command=clicked, bg='gray', width=200, height=150, image=emptyFace)
-        self.view.grid(row=self.satir, column=self.sutun)
+            player(self.number)
+        self.view = Button(master, textvariable=self.text, command=clicked,
+                           bg='gray', width=200, height=150, image=empty_face)
+        self.view.grid(row=self.row, column=self.column)
+
 
 board = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
 buttons = []
 root = Tk()
-emptyFace = ImageTk.PhotoImage(file="RenksizAdam.png")
-greenFace = ImageTk.PhotoImage(file="YesilAdam.png")
-yellowFace = ImageTk.PhotoImage(file="SariAdam.png")
+empty_face = ImageTk.PhotoImage(file=running_path+"/empty.png")
+green_face = ImageTk.PhotoImage(file=running_path+"/green.png")
+yellow_face = ImageTk.PhotoImage(file=running_path+"/yellow.png")
+
 
 def start(_buttons=buttons):
     board[:] = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
-    _buttons = range(9)
+    _buttons = list(range(9))
     for i in range(9):
         _buttons[i] = BoardButton(i, master=root)
     buttons[:] = _buttons
 
-def winnerCheck(player=21, _board=board):
+
+def check_winner(player=21, _board=board):
     for c in range(3):
         if _board[0][c] + _board[1][c] + _board[2][c] == player:
             return True
@@ -38,77 +46,85 @@ def winnerCheck(player=21, _board=board):
         if _board[r][0] + _board[r][1] + _board[r][2] == player:
             return True
     if _board[0][0] + _board[1][1] + _board[2][2] == player:
-            return True
+        return True
     if _board[0][2] + _board[1][1] + _board[2][0] == player:
-            return True
+        return True
     return False
 
-def showMessageAndStart(mesaj):
-    tkMessageBox.showinfo("END OF GAME", mesaj)
+
+def show_message_and_start(message):
+    messagebox.showinfo("END OF GAME", message)
     start()
 
-def endGameCheck(b=board):
-    if winnerCheck(player=15):
-        showMessageAndStart("You win! Congratulations!")
-    elif winnerCheck():
-        showMessageAndStart("You lost!!!")
 
-def checkBoard():
+def check_end_game(b=board):
+    if check_winner(player=15):
+        show_message_and_start("You win! Congratulations!")
+    elif check_winner():
+        show_message_and_start("You lost!!!")
+
+
+def check_board():
     for r in range(3):
         for c in range(3):
-            if(board[r][c]==0):
+            if(board[r][c] == 0):
                 return False
     return True
 
+
 def player(x, b=board):
-    r = x / 3
-    c = x % 3
+    r = int(x / 3)
+    c = int(x % 3)
     if b[r][c] == 0:
         b[r][c] = 5
-        setButton(x,0)
-        endGameCheck()
-        findComputerMove()
-        if checkBoard():
-            showMessageAndStart("DEUCE!!!")
+        set_button(x, 0)
+        check_end_game()
+        find_computer_move()
+        if check_board():
+            show_message_and_start("DEUCE!!!")
     else:
-        tkMessageBox.showerror("ERROR", "Wrong Move!")
+        messagebox.showerror("ERROR", "Wrong Move!")
 
-def setButton(i,kim):
-    if kim==0:
-        buttons[i].view.configure(image=greenFace)
+
+def set_button(i, player):
+    if player == 0:
+        buttons[i].view.configure(image=green_face)
     else:
-        buttons[i].view.configure(image=yellowFace)
+        buttons[i].view.configure(image=yellow_face)
+
 
 def computer(r, c):
     board[r][c] = 7
     i = 3 * r + c
-    setButton(i,1)
-    endGameCheck()
-  
-def findComputerMove():
-    emptyButton = 0
-    kayip = 0
-    copyBoard = [board[0][:], board[1][:], board[2][:]]
+    set_button(i, 1)
+    check_end_game()
+
+
+def find_computer_move():
+    empty_button = 0
+    lost = 0
+    board_copy = [board[0][:], board[1][:], board[2][:]]
     for c in range(3):
         for r in range(3):
             if board[r][c] == 0:
-                copyBoard[r][c] = 7
-                if winnerCheck(_board=copyBoard):
+                board_copy[r][c] = 7
+                if check_winner(_board=board_copy):
                     computer(r, c)
                     return
                 else:
-                    emptyButton, satir, sutun = 1, r, c
-                    copyBoard[r][c] = 5
-                    if winnerCheck(player=15, _board=copyBoard):
-                        kayip , satir1, sutun1 = 1, r, c
-                    copyBoard[r][c] = 0
-    if kayip:
-        computer(satir1, sutun1)
+                    empty_button, satir, sutun = 1, r, c
+                    board_copy[r][c] = 5
+                    if check_winner(player=15, _board=board_copy):
+                        lost, row1, column1 = 1, r, c
+                    board_copy[r][c] = 0
+    if lost:
+        computer(row1, column1)
         return
-    elif emptyButton:
+    elif empty_button:
         computer(satir, sutun)
         return
-    showMessageAndStart("DEUCE!!!")
+    show_message_and_start("DEUCE!!!")
+
 
 def main():
     root.title('XOX Game with Tkinter')
@@ -120,6 +136,7 @@ def main():
     root.config(menu=menubar)
     start()
     mainloop()
+
 
 if __name__ == "__main__":
     main()
