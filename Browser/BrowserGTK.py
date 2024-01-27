@@ -8,7 +8,6 @@ Upgrade to GTK3: 27 Mar 2016
 Fixes for Python v3: 27 Oct 2019
 '''
 import os
-import sys
 import gi
 gi.require_version('Gtk', '3.0')
 gi.require_version('WebKit2', '4.0')
