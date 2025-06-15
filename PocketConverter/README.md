@@ -6,26 +6,21 @@ This script converts Pocket export to a Firefox compatible JSON file.
 
 Install dependencies
 
-    poetry update
+    uv lock && uv sync
 
 Run JupyterLab
 
-    poetry ./convert.py [Pocket export filepath]
+    uv ./convert.py [Pocket export filepath]
 
-or
+## Package management
 
-    poetry shell
-    poetry ./convert.py [Pocket export filepath]
+We are using [uv](https://docs.astral.sh/uv/getting-started/) Python package and dependency
+manager.
 
-## Package Management
-
-This project is using [poetry](https://python-poetry.org/) Python package and dependency manager.
-
-- Init interactively `poetry init`
-- Add package `poetry add package-name`
-- Remove package `poetry remove package-name`
-- Install dependencies `poetry install`
-- Update dependencies `poetry update`
-- Show available packages `poetry show`
-- Run a command in the virtualenv `poetry run command`
-- Open virtualenv `poetry shell`
+- Init interactively `uv init`
+- Add package `uv add package-name`
+- Remove package `uv remove package-name`
+- Create lockfile `uv lock`
+- Update dependencies `uv sync`
+- Show available packages `uv show`
+- Run a command in the virtualenv `uv run command`

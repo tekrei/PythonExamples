@@ -1,14 +1,19 @@
-[tool.poetry]
+[tool.pdm.build]
+includes = []
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[project]
+authors = [
+    {name = "T. E. Kalayci"},
+]
+license = {text = "GPL-3.0-or-later"}
 name = "pocket-converter"
 version = "0.1.0"
 description = "Simple project to convert Pocket export to bookmarks format"
-authors = ["T. E. Kalayci"]
-license = "GPL-3.0-or-later"
 
-[tool.poetry.dependencies]
-python = "^3.12"
-beautifulsoup4 = "^4.9"
-
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires-python = ">=3.12"
+dependencies = [
+"beautifulsoup4"
+]
